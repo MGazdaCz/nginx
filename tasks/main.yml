@@ -1,0 +1,23 @@
+- name: Install nginx
+  apt:
+    name: nginx
+    state: latest
+  notify: restart nginx
+
+- name: Copy nginx configuration
+  template: src=nginx.conf dest=/etc/nginx/nginx.conf
+  notify: restart nginx
+
+- name: Change chown for var/www/html to www-data
+  file:
+    path: /var/www/html
+    owner: www-data
+    group: www-data
+    mode: 0775
+    state: directory
+    recurse: yes
+
+- name: Remove default configuration for virtual host
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
